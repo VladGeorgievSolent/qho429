@@ -16,21 +16,47 @@ def header() -> None:
           f'{helpers.PrintColors.END}')
 
 
-def user_shopper_id_entry() -> int:
+def user_numerical_entry(message: str) -> int:
     """
-    Message prompting the user for the their shopper_id.
+    Message prompting the user for a numerical entry.
 
     :param: None
-    :return: None if invalid shopper_id otherwise an integer
+    :return: integer
     """
-    header()
-    user_input: str = input(f'{helpers.PrintColors.CYAN}Enter your shopper_id: {helpers.PrintColors.END}').strip()
+    while True:
+        user_input: str = input(f'{helpers.PrintColors.CYAN}{message}{helpers.PrintColors.END}').strip()
+        print(f'')
+        try:
+            value: int = int(user_input)
+        except ValueError as e:
+            helpers.error(f'Invalid entry: \'{e}\'. Your selection must be a numerical value')
+            continue
 
-    try:
-        shopper_id: int = int(user_input)
-        return shopper_id
-    except Exception as e:
-        helpers.error(f'Invalid entry: \'{e}\'. Your selection must be a numerical value')
+        if value < 0:
+            helpers.error('The value must be greater than 0')
+            continue
+        else:
+            return value
+
+
+def user_confirmation(message: str) -> bool:
+    """
+    Message prompting to confirm an action.
+
+    :param: None
+    :return: boolean
+    """
+    while True:
+        user_input: str = input(f'{helpers.PrintColors.CYAN}{message}{helpers.PrintColors.END}').strip().upper()
+        print(f'')
+        if user_input == 'Y':
+            return True
+        elif user_input == 'N':
+            return False
+        else:
+            helpers.error('The answer must by one of: Y, N')
+            continue
+
 
 
 def menu(menu_options: dict[int, str] = None) -> Union[int, None]:
@@ -51,12 +77,11 @@ def menu(menu_options: dict[int, str] = None) -> Union[int, None]:
                         4: "Change the quantity of an item in your basket ", 5: "Remove an item from your basket",
                         6: "Checkout", 7: "Exit"}
 
-    print(f'{helpers.PrintColors.CYAN}Please choose one of the following options:{helpers.PrintColors.END}')
-
     for key, value in menu_options.items():
-        print(key, ':', value)
+        print(f'{key}. {value}')
 
     user_input: str = input(f'{helpers.PrintColors.CYAN}Enter your selection: {helpers.PrintColors.END}').strip()
+    print(f'')
 
     try:
         convert_to_int = int(user_input)
